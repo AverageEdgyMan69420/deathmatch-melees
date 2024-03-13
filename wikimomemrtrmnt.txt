@@ -1,0 +1,253 @@
+to find other sections of this """"wiki"""", use ctrl+f and search:
+origins
+development
+
+i swear there was no better way for a wiki trust me
+
+
+origins of melees
+
+counter sword was entirely from s4, albeit with my own attack animations instead
+the m2 was planned to be a parry instead of a block similar to elden ring's shields, although it ended up being an attack instead (e - offsend)
+other attacks are a copy from s4
+
+beast's entire gameplay mechanic is from susano'o terumi in the game "blazblue centralfiction", the charge (level 2 and 3 being exceptions), vital shock and spinslam are all from him
+the level 1 dropkick animations idea was taken from prototype 1
+the level 2 dropkick animations were taken from yakuza 0 legend style
+tankskin was taken from overwatch drisa's ability although altered, whereas now using it below 70 health is a direct upgrade to the player
+lunge slam was taken from s4's "power" style set F skill, windup of the animation inspired by azrael
+groundspikes are also from prototype 1, almost a 1:1 copy
+consume is also also from prototype 1, including both of its animation ideas
+the projectile is taken from susanoo's forward-light attack
+devastate level 1 and 2 are susanoo's "drive" attacks
+awakening was entirely an idea of my own, its combos/moveset are inspired from masato aizawa's final fight from yakuza 5
+
+dragon's alternate combos are a replica of yakuza 0 legend style's combos
+the grapple was inspired from susanoo's fucken goddarn mf drive attack or something you can even see the animation being a copy
+the "auto combo" was inspired from supersoldiers in prototype 1
+
+fists' m2 charge was possibly inspired from overwatch doomfist's or s4 iron boot's dash
+both slams are from prototype 1's devastators
+the block's grapple-counter is inspired from prototype 1 supersoldiers' block
+near the end of forward command grab, the backflip was inspired from prototype 1's "hold s and charge jump after landing from a forward jump" animation
+
+metallic fists' grapples were inspired by tezca from brawlhalla
+
+iron fist's combos were inspired entirely from prototype 1's mechanic of combining punches and kicks together
+the large upward swing (pluster) was inspired by susanoo's third stage megalith attack
+the splintering thrust (w+r) was inspired from susanoo's splintering thrust its just kind of a copy paste really
+the debris throw was likely inspired by iron fist's pluster animation, turned into a throw instead, or its l4d2 tank's throw
+the spikes were inspired by prototype 2's hammerfists
+the forward lunge was inspired from prototype 2's goliath enemy
+
+vital claw has no inspirations besides its model & name being from s4 league :'(
+
+greatblade is entirely inspired from guilty gear strive, sol badguy
+
+plasma sword also is inspired, by s4 league, its idle animation inspired by "your only move is hustle", the claymore
+the m1 in air was inspired from prototype 1's blade's m2 in air
+the projectile was just a "what if the batteries at the end did something" idea
+the spikes are a copy of claymore's although shorter range, and longer windup
+
+sigma blade is entirely a replica from s4 league, albeit a few original attacks
+the awakening animation was inspired by nagoriyuki from guilty gear strive
+
+claymore's combos were inspired from awakened sigma blade (combo 3's are the same as well)
+the in-air attack was inspired from s4's plasma sword jump attack
+the forward lunge was actually never going to be implemented as before that pressing R would simply play combo 3's animation except it did weaker damage, although to complement this at the final seconds of the addon's release the lunge attack was created
+
+thrine blades were inspired by yuuki terumi from blazblue centralfiction, its combos from mgr revengeance
+the m1 in air was inspired by susanoo
+the throw is actually a re-use of plasma sword's combo 3, although noone has noticed this yet? why? it was obvious enough imo, although it WAS meant to have its own animation rather than a RGG studios moment
+
+spear is inspired by faust from guilty gear strive, its model by orion's spear from brawlhalla (originally modelled for my friend)
+
+scythe is a replica from s4 league with a few original attacks
+
+
+
+
+
+
+
+development
+
+for PROPER worldmodels with REAL animation support (like heavy machine gun, minegun, dual magnums), get a model of a playermodel into blender, then your model
+parent the model to the skeleton/armature of the playermodel, then rotate & position it to the bone you want
+then weight paint it to the bone
+apply all transformations
+do the cool edgy dum dum animations
+then duplicate the WORLDmodel and skeleton, remove every single bone that the model is NOT attached to and reposition the bone the worldmodel is attached to, to the center
+now, either make this a 1-frame idle for the weapon (NOT TESTED), or use CATS addon to apply bone transformations -properly-
+then make a collision model for it, use only cubes in a single model for convex pieces (no shrinkwrapping)
+then do some qc magic and compile it with Crowbar
+now, set the weapon's .lua's swep.worldmodel to your worldmodel path
+if you copied a weapon of mine then rid of any additional rendering from swep creation kit, at the bottom (or use like iron fist's lua to avoid this cleanup)
+ta da!!!!!! worbmopel :)
+
+for attack animations, decompile the hunter_metallicfistsanims.mdl with crowbar and copy paste an animation-block to the bottom for a template (or write your own)
+
+the attacks should start from the idle pose of the weapon and transition BACK to the idle pose in the same animation
+
+
+for grapples, start the name of the animation with "grab_" or "hunterspecial_" for a SPECIFIC camera, if neither are used, thirdperson wont apply and the victim being grappled wont be put into thirdperson !!!LIKE THEY SHOULD!!!
+
+for nearly any type of events in the animations (forward-movement, sounds, particles, etc.), use animation events with an event ID of 1001, and start it with "EPM3,
+examples:
+	{ event 1001 8 "EPM3,F,500" }
+...will push the player forward (towards where theyre looking) by 500 hammer units at frame 8
+if the player is in air, the velocity will be set to 100 instead of whatever you put, to prevent them from flying at mach 99456
+for backwards, replace F with P, which will instead push the player backwards. could this be achieved with a negative number using F? i have no idea, i have never tried, i am zestarded.
+the backwards push is used for grapples alot as well, dont forget that!
+
+for sounds, use S, instead of F, like so:
+	{ event 1001 6 "EPM3,S,failedexpsounds/swing5.wav" }
+DO NOT use quotes for the sound file itself, anything after the second comma is considered to be the path to the sound file
+
+for particles, use cl disable bodygroup, like so:
+	{ event AE_CL_DISABLE_BODYGROUP  13 "EPM3,taunt_flip_land,footr,1" }
+yes yes i know that disable_bodygroup looks ungodly for "particles" but TRUST ME as long as that starts with EPM3 it IS for particles
+the reason for weird naming is for particles to RENDER clientside, there is no other reason it uses that instead of 1001
+the second argument (epm3 is always the first and should be epm3 no matter what) is the name of the particle, the third is the attachment that the particle will be spawned at, the fourth should ONLY exist at the last-particle played in the animation
+if its not the last, remove the ,1 altogether
+this piece of shit moron cunt mongoloid ungrown toddler ,1 is used to set a variable on the player to "true" to disable particles. why??? WHY???? without it, the particle REEEEPLAAAAAAYS, AFTER HTE ANIAMTIJKNO ENDS. WHHHHHYYYYY???????? I DONT FUCIJKNG Kown
+for this reason, you have to set the player's "dontreplay" variable to false everytime the animation is played, in the .lua of the weapon BOTH SERVERSIDE AND CLIENTSIDE, like so:
+self.Owner.dontreplay = false
+OTHERWISE, the particle wont play a second time, but will a third, not a fourth, will a fifth, rgsolöpşğgfĞPOLEFSPĞİOŞSVZDRKLEÖFRVDPOERFDĞŞGİTKÖL
+
+for grapples, victim taking damage, use D, like so:
+{ event 1001 14 "EPM3,D,35,failedexpsounds/consume.wav" }
+the D stands for damage, the 35 is the damage that will be applied, followed by a sound right after it
+if you do not want a sound, KEEP the comma but dont put a filepath there, like ,35,"
+for healing, you can apparently make the damage a negative value (beast's consume uses this)
+!!!HOWEVER!!!
+
+a death check event MUST be called in grapples:
+{ event 1001 33 "EPM3,DN" }
+
+what this does is check if the player has 0 or less health, if so, kill them
+without this, the victim will not automatically die and simply have their health removed, having them to live with 0 or less hp
+
+for bodygroups (terumi's blades, iron fist's fingers), use B, like so:
+	{ event 1001 38 "EPM3,B,5,0" }
+the 5 is which bodygroup to change, the 0 is the value of the bodygroup to be changed
+this value will be applied to the current held weapon of the player, and WONT work if it renders with swep creation kit (i.e plasma sword)
+this actually calls https://wiki.facepunch.com/gmod/Entity:SetBodygroup with the numbers being the arguments for it
+
+
+for hitboxes:
+(use "developer 2" in console to see hitboxes)
+[psst also also you can decompile & read the attachments at the top of hunter_metallicfistsanims.mdl]
+
+
+every single hitbox is bound to the bones from the animation, they will follow either an attachment or a bone entirely, so make your attack animations usually have the hand/arm toward the center
+
+
+for spherical hitboxes;
+CLOCAS_ATTHitbox(attacker,range,size,damage,hitsound,hitvelocity,hitboxamount,delayperhitbox,attachmentorbone,starttimer,uponenemyhitfunction,isitattachment,pushentities,checkforhitlist)
+
+the way this works is it fires a trace forward from the attachment/bone, and then checks for anything inside a sphere
+
+checkforhitlist is only made for beast's vitalshock ability, where it hits more than once unlike other hitboxes
+
+an example usage of this is;
+CLOCAS_ATTHitbox(self.Owner,20,20,15*GetConVar("failedexp_beastdmg"):GetFloat(),"failedexpsounds/mg2_hit.ogg",1200,27,0,"ValveBiped.Bip01_Head1",0.35,function(v) 
+	print(v)
+end,false,true)
+
+for box, hitboxes;
+CLOCAS_BOXHitbox(attacker,attachmentorbone1,size,damage,hitsound,hitvelocity,hitboxamount,delayperhitbox,attachmentorbone2,starttimer,uponenemyhitfunction)
+
+the way this works is that it starts at attachment 1, then drags a corner to attachment 2, and forms a box
+boxes are alot faster (ahead of the animation that the player sees) and makes it hard to hit anything, compare hitboxes of spear to beast, youll see how less reliable & hard-to-hit they are
+
+example usage:
+CLOCAS_BOXHitbox(self.Owner,"ValveBiped.Bip01_Pelvis",30,15*GetConVar("failedexp_beastdmg"):GetFloat(),"failedexpsounds/sigmablade_hit_wall.ogg",3000,10,0.01,"azraelht2",0.05,function(enemy) 
+	print(enemy)
+end, true)
+
+for shockwaves;
+CLOCAS_Shockwave(attacker,hitvelocity,hitboxamount,startsize,endsize,damage,hitsound,starttimer,delayperhitbox,custompos,speedmult,dohitlist)
+
+custompos will be used instead of the attacker's position if set, its not necessary
+
+and i have no idea what a majority of these do nor how this works i havent touched the shockwave hitbox code in a morbillion millenials just take this example and edit things until it works trust me
+CLOCAS_Shockwave(self.Owner,100,13,14,160,18*GetConVar("failedexp_beastdmg"):GetFloat(),"failedexpsounds/bsword_counter.ogg",0,0.05,pos,0.005)
+
+
+for grapples; (copypaste of spherical hitboxes)
+CLOCAS_GrappleHitbox(att,range,size,dmgnum,hitsound,multpl,repetitions,delmult,attachment,startdelay,callbackfunc)
+
+this will only call callbackfunc IF the hit thing is a player (as of march 10 this also calls if it hits a npc or a nextbot)
+
+example usage, very very long:
+
+CLOCAS_GrappleHitbox(self.Owner,0,24,0,"",0,13,0.03,"ValveBiped.Bip01_L_Hand",0.32, function(v)
+	self.Owner:StopSound("failedexpsounds/consumecharge.wav")
+	self.trail1:SetKeyValue("startwidth", 15)
+	timer.Create(self:EntIndex().."res",1.5 , 1,function()
+		if IsValid(self) then self.trail1:SetKeyValue("startwidth", 0) end
+	end)
+	self.nexti = CurTime()+2
+	self.Owner:Freeze(true)
+	local attacker = self.Owner
+	local victim = v
+	v.dontreplay = false
+	attacker:SetVelocity(-attacker:GetVelocity())
+	victim:SetVelocity(-victim:GetVelocity())
+	--attacker:SetEyeAngles(Angle(0,attacker:EyeAngles()[2],0))
+	local pos, ang = attacker:GetPos(), Angle(0,attacker:EyeAngles()[2],0)
+	local newpos, newang = Vector(0, -44.4716, 10), Angle()
+	-- comment here! the -44.4716 DEPENDS on the position of the armature animated within blender, it determines how far away the victim is put FROM the attacker
+	ang:RotateAroundAxis(ang:Right(), newang.x)
+	ang:RotateAroundAxis(ang:Up(), newang.y-180)
+	-- another comment! do NOT export your victim's grapple animations with him facing -180 degrees (to the attacker), this is done automatically as seen above, nor any far away from the center (where the 3d cursor is), otherwise will be very nightmarish and ruin animation events!
+	ang:RotateAroundAxis(ang:Forward(), newang.z)
+	pos:Add(ang:Right() * newpos.x)
+	pos:Add(ang:Forward() * newpos.y)
+	pos:Add(ang:Up() * newpos.z)
+	victim:SetPos(pos)
+	victim:SetEyeAngles(ang)
+	victim:SetAngles(ang)
+	attacker:SetAngles(ang)
+	timer.Simple(0, function()
+		attacker:SetVelocity(-attacker:GetVelocity())
+		victim:SetVelocity(-victim:GetVelocity())
+		victim:SetPos(pos)
+		victim:SetEyeAngles(ang)
+		victim:SetAngles(ang)
+		victim:SetAngles(ang)
+		local newpos, newang = Vector(0, 0, 5), Angle()
+		ang:RotateAroundAxis(ang:Right(), newang.x)
+		ang:RotateAroundAxis(ang:Up(), newang.y)
+		ang:RotateAroundAxis(ang:Forward(), newang.z)
+		pos:Add(ang:Right() * newpos.x)
+		pos:Add(ang:Forward() * newpos.y)
+		pos:Add(ang:Up() * newpos.z)
+		victim:SetPos(pos)
+		victim:SetEyeAngles(ang)
+		victim:SetAngles(ang)
+		attacker:SetAngles(ang)
+		v:Freeze(true)
+	end)
+	if attacker:Health()>50 then attacker:SetSVAnimation("susanoo_consume1", true,false)
+		victim:SetSVAnimation("grab_consume1", true,false)
+		attacker:GodEnable() victim:GodEnable() timer.Simple(2, function() victim:GodDisable() attacker:GodDisable() attacker:Freeze(false) victim:Freeze(false) end)
+	else
+		attacker:SetSVAnimation("susanoo_consume2", true,true,true)
+		-- this is actually a bad example as other grapples dont have this weird health-check, but this is where both attacker & victim get their animations at
+		-- the first "true" is for "autostop", where the animation will automatically end or not, the second is to reset positions of the player if their pelvis bone is further from the origin of their model, the third true is to reset their angles or not
+		victim:SetSVAnimation("grab_consume2", true,true,true)
+		attacker:GodEnable() victim:GodEnable() timer.Simple(1.5, function() attacker:GodDisable() attacker:Freeze(false) end)
+		timer.Simple(2.1, function() victim:GodDisable() victim:Freeze(false) end)
+	end
+end)
+
+
+
+
+
+for combos, copy paste the "elseif self.dlcombos == 2 then" and whats below it until the next elseif, and change the 2 to whatever the fuck else i swear just figure it out yourself
+then change the "self.dlcombos = X" to the next number (OR 1 if its the last combo)
+near the bottom there is always a timer.create that starts with "darkl_"
+this is used for followups (time where you can attack again for the next combo) where its reset if the player doesnt attack again, this is usually 0.2 but any shorter than this tends to be tedious
